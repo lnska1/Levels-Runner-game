@@ -3,34 +3,54 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>LEVELS RUNNER GAME</title>
+<title>SUPER RUNNER</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 html, body { width:100%; height:100%; background:#000; font-family:Arial,sans-serif; overflow:hidden; touch-action:none; }
 
+/* ---- ROTATION WRAPPER ---- */
+/* In landscape (or desktop): fills screen normally */
+#wrapper {
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  overflow:hidden;
+}
+
+/* When body has .forceRotate (portrait mobile),
+   rotate the wrapper 90deg so content appears landscape */
+body.forceRotate #wrapper {
+  width: 100vh;
+  height: 100vw;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(90deg);
+  transform-origin: center center;
+}
+
 #loginScreen, #menuScreen, #levelScreen, #howtoScreen, #langScreen, #gameScreen, #scaryScreen {
-  position:fixed; top:0; left:0; width:100%; height:100%; display:none; background:#050510;
+  position:absolute; top:0; left:0; width:100%; height:100%; display:none; background:#050510;
 }
 .sActive { display:block !important; }
 
 .cFlex { display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; height:100%; }
 
-#stars { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; }
+#stars { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; }
 
 /* LOGIN */
-#loginScreen { background:radial-gradient(ellipse at center,#030bff 0%,#0000ff 70%); z-index:10; }
-.lBox { background:rgb(55, 9, 224); border:2px solid gold; border-radius:20px; padding:36px 28px; width:min(380px,88vw); text-align:center; position:relative; z-index:1; box-shadow:0 0 60px rgba(255,215,0,0.25); }
+#loginScreen { background:radial-gradient(ellipse at center,#1e00ff 0%,#0000ff 70%); z-index:10; }
+.lBox { background:rgba(255,215,0,0.07); border:2px solid gold; border-radius:20px; padding:36px 28px; width:min(380px,88vw); text-align:center; position:relative; z-index:1; box-shadow:0 0 60px rgba(255,215,0,0.25); }
 .logo1 { font-size:clamp(52px,14vw,80px); font-weight:900; color:gold; text-shadow:0 0 30px gold; letter-spacing:4px; line-height:1; font-family:Impact,Arial,sans-serif; }
 .logo2 { font-size:clamp(26px,7vw,40px); font-weight:900; color:gold; text-shadow:0 0 20px gold; letter-spacing:3px; line-height:1; font-family:Impact,Arial,sans-serif; margin-top:-4px; }
 .lSub { color:#888; font-size:12px; letter-spacing:3px; margin:6px 0 28px; }
-.inp { width:100%; padding:14px; margin-bottom:12px; background:rgb(81, 0, 255); border:1px solid rgba(255,215,0,0.4); border-radius:10px; color:#fff; font-size:16px; text-align:center; outline:none; }
+.inp { width:100%; padding:14px; margin-bottom:12px; background:rgb(8, 0, 255); border:1px solid rgba(255,215,0,0.4); border-radius:10px; color:#fff; font-size:16px; text-align:center; outline:none; }
 .inp:focus { border-color:gold; }
 .bigBtn { width:100%; padding:15px; margin-top:4px; background:linear-gradient(135deg,#CC0000,#ff4400); border:none; border-radius:12px; color:#fff; font-size:20px; font-weight:bold; letter-spacing:2px; cursor:pointer; }
 .bigBtn:active { opacity:0.8; }
 .err { color:#f44; font-size:13px; margin-top:10px; min-height:18px; }
 
 /* MENU */
-#menuScreen { background:radial-gradient(ellipse at top,#1a0a00 0%,#000010 60%); z-index:10; }
+#menuScreen { background:radial-gradient(ellipse at top,#1500ff 0%,#0000ff 60%); z-index:10; }
 .mTitle { font-family:Impact,Arial,sans-serif; font-size:clamp(60px,18vw,110px); color:gold; text-shadow:0 0 40px gold,0 5px 0 #8B6914; letter-spacing:6px; text-align:center; line-height:0.9; margin-bottom:10px; }
 .mStars { color:gold; font-size:20px; letter-spacing:5px; margin-bottom:30px; }
 .mBtns { display:flex; flex-direction:column; gap:14px; width:min(300px,80vw); }
@@ -48,34 +68,34 @@ html, body { width:100%; height:100%; background:#000; font-family:Arial,sans-se
 .lc { aspect-ratio:1; border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:16px; cursor:pointer; border:2px solid transparent; }
 .lc:active { transform:scale(0.88); }
 .lOk { background:#1a3a1a; color:#0f8; border-color:#0f8; }
-.lLock { background:#111; color:#333; border-color:#222; cursor:not-allowed; }
+.lLock { background:#0d01ff; color:#333; border-color:#222; cursor:not-allowed; }
 .lCur { background:linear-gradient(135deg,#CC0000,#ff3300); color:#fff; border-color:gold; }
 .backBtn { padding:10px 30px; margin-bottom:20px; background:none; border:1px solid #555; border-radius:8px; color:#aaa; font-size:16px; cursor:pointer; }
 
 /* HOWTO / LANG */
 #howtoScreen, #langScreen { z-index:10; overflow-y:auto; -webkit-overflow-scrolling:touch; }
-.iBox { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.12); border-radius:16px; padding:28px; width:min(480px,90vw); text-align:center; margin:20px 0; position:relative; z-index:1; }
+.iBox { background:rgb(0, 21, 255); border:1px solid rgb(34, 0, 255); border-radius:16px; padding:28px; width:min(480px,90vw); text-align:center; margin:20px 0; position:relative; z-index:1; }
 .iBox h2 { font-size:30px; color:gold; letter-spacing:3px; margin-bottom:18px; font-family:Impact,sans-serif; }
-.iBox h3 { color:#6af; font-size:15px; margin:14px 0 6px; }
+.iBox h3 { color:rgb(255, 0, 0); font-size:15px; margin:14px 0 6px; }
 .iBox p { color:#bbb; font-size:14px; line-height:1.8; }
-.kk { display:inline-block; background:rgba(0,150,255,0.2); border:1px solid #6af; color:#6af; padding:2px 8px; border-radius:5px; font-size:12px; margin:2px; }
+.kk { display:inline-block; background:rgba(0,150,255,0.2); border:1px solid rgb(255, 0, 0); color:rgb(255, 0, 0); padding:2px 8px; border-radius:5px; font-size:12px; margin:2px; }
 .lgBtn { display:block; width:100%; padding:13px; margin-bottom:10px; background:rgba(0,0,0,0.5); border:1px solid rgba(0,255,136,0.3); border-radius:10px; color:#fff; font-size:17px; cursor:pointer; }
-.lgBtn:active, .lgA { background:rgba(0,255,136,0.15) !important; border-color:#0f8 !important; color:#0f8 !important; }
+.lgBtn:active, .lgA { background:rgba(0,255,136,0.15) !important; border-color:rgb(255, 0, 0) !important; color:rgb(255, 0, 0) !important; }
 
 /* GAME */
 #gameScreen { background:#000; z-index:10; }
 #gc { display:block; position:absolute; top:0; left:0; }
-#hud { position:fixed; top:0; left:0; right:0; z-index:20; display:flex; align-items:center; justify-content:space-between; padding:10px 16px; background:linear-gradient(to bottom,rgba(0,0,0,0.9),transparent); pointer-events:none; }
+#hud { position:absolute; top:0; left:0; right:0; z-index:20; display:flex; align-items:center; justify-content:space-between; padding:10px 16px; background:linear-gradient(to bottom,rgba(0,0,0,0.9),transparent); pointer-events:none; }
 .hLives { display:flex; gap:5px; font-size:20px; }
 .hLvl { font-family:Impact,sans-serif; font-size:22px; color:gold; letter-spacing:2px; }
 .hSc { font-family:Impact,sans-serif; font-size:22px; color:#0f8; }
 
-#mc { position:fixed; bottom:0; left:0; right:0; z-index:20; display:none; justify-content:space-between; align-items:flex-end; padding:10px 20px 22px; background:linear-gradient(to top,rgba(0,0,0,0.6),transparent); pointer-events:none; }
+#mc { position:absolute; bottom:0; left:0; right:0; z-index:20; display:none; justify-content:space-between; align-items:flex-end; padding:10px 20px 22px; background:linear-gradient(to top,rgba(0,0,0,0.6),transparent); pointer-events:none; }
 .cg { display:flex; gap:12px; pointer-events:all; }
 .cb { width:70px; height:70px; border-radius:50%; background:rgba(255,255,255,0.2); border:2px solid rgba(255,255,255,0.4); color:#fff; font-size:26px; display:flex; align-items:center; justify-content:center; cursor:pointer; touch-action:manipulation; pointer-events:all; -webkit-user-select:none; user-select:none; }
 .cbJ { width:80px; height:80px; background:rgba(200,0,0,0.5); border-color:#f44; font-size:30px; }
 
-#ov { position:fixed; top:0; left:0; width:100%; height:100%; z-index:30; background:rgba(0,0,0,0.85); display:none; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:20px; }
+#ov { position:absolute; top:0; left:0; width:100%; height:100%; z-index:30; background:rgba(0,0,0,0.85); display:none; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:20px; }
 .ovT { font-family:Impact,sans-serif; font-size:clamp(40px,10vw,70px); letter-spacing:4px; margin-bottom:10px; }
 .ovS { color:#bbb; font-size:16px; margin-bottom:24px; }
 .ovB { padding:14px 36px; margin:6px; font-weight:bold; font-size:18px; letter-spacing:2px; border:none; border-radius:12px; cursor:pointer; }
@@ -87,25 +107,23 @@ html, body { width:100%; height:100%; background:#000; font-family:Arial,sans-se
 /* SCARY */
 #scaryScreen { background:#000; z-index:100; cursor:pointer; }
 #sc2 { display:block; position:absolute; top:0; left:0; }
-#scT { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-family:Impact,sans-serif; font-size:clamp(32px,8vw,64px); color:#f00; text-shadow:0 0 20px #f00; letter-spacing:4px; text-align:center; white-space:pre-line; z-index:101; animation:sF 0.4s infinite; }
+#scT { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-family:Impact,sans-serif; font-size:clamp(32px,8vw,64px); color:#f00; text-shadow:0 0 20px #f00; letter-spacing:4px; text-align:center; white-space:pre-line; z-index:101; animation:sF 0.4s infinite; }
 @keyframes sF { 0%,100%{opacity:1}50%{opacity:0.3} }
 </style>
 </head>
 <body>
 
+<div id="wrapper">
 <div id="stars"></div>
 
 <!-- LOGIN -->
 <div id="loginScreen" class="sActive">
   <div class="cFlex">
     <div class="lBox">
-      <div class="logo1">LEVELS</div>
+      <div class="logo1">SUPER</div>
       <div class="logo2">RUNNER</div>
-      <div class="lSub" id="id_lSub">ENTER YOUR CREDENTIALS</div>
-      <input class="inp" id="id_user" type="text" placeholder="Username" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-      <input class="inp" id="id_pass" type="password" placeholder="Password" autocomplete="off">
-      <button class="bigBtn" id="id_lBtn" onclick="doLogin()">ENTER THE PITCH</button>
-      <div class="err" id="id_err"></div>
+      <div class="lSub" id="id_lSub">SIUUUU!</div>
+      <button class="bigBtn" id="id_lBtn" onclick="doLogin()" style="margin-top:16px;">▶ دخول</button>
     </div>
   </div>
 </div>
@@ -113,7 +131,7 @@ html, body { width:100%; height:100%; background:#000; font-family:Arial,sans-se
 <!-- MENU -->
 <div id="menuScreen">
   <div class="cFlex" style="position:relative;z-index:1">
-    <div class="mTitle">LEVELS<br>RUNNER</div>
+    <div class="mTitle">SUPER<br>RUNNER</div>
     <div class="mStars">★ ★ ★ ★ ★</div>
     <div class="mBtns">
       <button class="mBtn mRed" id="id_mPlay" onclick="showLevels()">▶ PLAY</button>
@@ -198,17 +216,19 @@ html, body { width:100%; height:100%; background:#000; font-family:Arial,sans-se
   <div id="scT">YOU WON!<br>💀 SIUUUU 💀</div>
 </div>
 
+</div><!-- end #wrapper -->
+
 <script>
 'use strict';
 
 // ===== TRANSLATIONS =====
 const TR = {
-  ar:{ lSub:'سيو — أدخل بياناتك', lBtn:'ادخل الملعب', lErr:'اسم المستخدم أو كلمة السر خاطئة!', lPlU:'اسم المستخدم', lPlP:'كلمة السر', mPlay:'▶ العب', mHow:'? كيف تلعب', mLang:'🌐 اللغة', lvlTitle:'اختر المرحلة', lvlBack:'← رجوع', htTitle:'كيف تلعب', htPC:'🖥️ PC', htPCt:'← → تحرك │ ↑ Space قفز │ ESC وقفة', htMob:'📱 الجوال', htMobt:'استخدم الأزرار — شيّل الجوال أفقي!', htRules:'📋 القواعد', htRulest:'اجمع ⚽ │ اسحق الأعداء 🔴 │ وصل للعلم 🏁 │ 3 أرواح │ 100 مرحلة', htBack:'← رجوع', hudLvl:'مرحلة', win:'🎉 تم المرور!', lose:'💀 انتهت اللعبة', loseSub:'تبي تحاول مرة ثانية؟', ovNext:'التالي ▶', ovRetry:'أعد ↺', ovMenu:'القائمة ⌂', scTxt:'انتصرت!\n💀 سيووو 💀', pause:'⏸ وقفة' },
-  en:{ lSub:'SIUU — ENTER YOUR CREDENTIALS', lBtn:'ENTER THE PITCH', lErr:'Wrong username or password!', lPlU:'Username', lPlP:'Password', mPlay:'▶ PLAY', mHow:'? HOW TO PLAY', mLang:'🌐 LANGUAGE', lvlTitle:'SELECT LEVEL', lvlBack:'← BACK', htTitle:'HOW TO PLAY', htPC:'🖥️ PC Controls', htPCt:'← → Move │ ↑ W Space Jump │ ESC Pause', htMob:'📱 Mobile', htMobt:'Use on-screen buttons. Hold phone LANDSCAPE!', htRules:'📋 Rules', htRulest:'Collect ⚽ • Stomp enemies 🔴 • Reach flag 🏁 • 3 lives • 100 levels!', htBack:'← BACK', hudLvl:'LEVEL', win:'🎉 LEVEL CLEAR!', lose:'💀 GAME OVER', loseSub:'Want to try again?', ovNext:'NEXT ▶', ovRetry:'RETRY ↺', ovMenu:'MENU ⌂', scTxt:'YOU WON!\n💀 SIUUUU 💀', pause:'⏸ PAUSED' },
-  fr:{ lSub:'SIUU — ENTREZ VOS IDENTIFIANTS', lBtn:'ENTRER SUR LE TERRAIN', lErr:'Identifiants incorrects!', lPlU:"Nom d'utilisateur", lPlP:'Mot de passe', mPlay:'▶ JOUER', mHow:'? COMMENT JOUER', mLang:'🌐 LANGUE', lvlTitle:'CHOISIR LE NIVEAU', lvlBack:'← RETOUR', htTitle:'COMMENT JOUER', htPC:'🖥️ PC', htPCt:'← → Déplacer │ ↑ Sauter │ ESC Pause', htMob:'📱 Mobile', htMobt:'Boutons à l\'écran — mode PAYSAGE!', htRules:'📋 Règles', htRulest:'Collectez ⚽ • Évitez 🔴 • Drapeau 🏁 • 3 vies • 100 niveaux', htBack:'← RETOUR', hudLvl:'NIVEAU', win:'🎉 NIVEAU RÉUSSI!', lose:'💀 GAME OVER', loseSub:'Réessayer?', ovNext:'SUIVANT ▶', ovRetry:'RÉESSAYER ↺', ovMenu:'MENU ⌂', scTxt:'VOUS AVEZ GAGNÉ!\n💀 SIUUUU 💀', pause:'⏸ PAUSE' },
-  es:{ lSub:'SIUU — INGRESA TUS DATOS', lBtn:'ENTRAR AL CAMPO', lErr:'Usuario o contraseña incorrectos!', lPlU:'Usuario', lPlP:'Contraseña', mPlay:'▶ JUGAR', mHow:'? CÓMO JUGAR', mLang:'🌐 IDIOMA', lvlTitle:'SELECCIONAR NIVEL', lvlBack:'← ATRÁS', htTitle:'CÓMO JUGAR', htPC:'🖥️ PC', htPCt:'← → Mover │ ↑ Saltar │ ESC Pausa', htMob:'📱 Móvil', htMobt:'Usa botones — teléfono HORIZONTAL!', htRules:'📋 Reglas', htRulest:'Recoge ⚽ • Enemigos 🔴 • Bandera 🏁 • 3 vidas • 100 niveles', htBack:'← ATRÁS', hudLvl:'NIVEL', win:'🎉 ¡NIVEL COMPLETADO!', lose:'💀 FIN DEL JUEGO', loseSub:'¿Intentar de nuevo?', ovNext:'SIGUIENTE ▶', ovRetry:'REINTENTAR ↺', ovMenu:'MENÚ ⌂', scTxt:'¡GANASTE!\n💀 SIUUUU 💀', pause:'⏸ PAUSA' },
-  pt:{ lSub:'SIUU — INSIRA SUAS CREDENCIAIS', lBtn:'ENTRAR NO CAMPO', lErr:'Utilizador ou senha incorretos!', lPlU:'Utilizador', lPlP:'Senha', mPlay:'▶ JOGAR', mHow:'? COMO JOGAR', mLang:'🌐 IDIOMA', lvlTitle:'SELECIONAR NÍVEL', lvlBack:'← VOLTAR', htTitle:'COMO JOGAR', htPC:'🖥️ PC', htPCt:'← → Mover │ ↑ Saltar │ ESC Pausa', htMob:'📱 Telemóvel', htMobt:'Botões em ecrã — posição HORIZONTAL!', htRules:'📋 Regras', htRulest:'Colete ⚽ • Inimigos 🔴 • Bandeira 🏁 • 3 vidas • 100 níveis', htBack:'← VOLTAR', hudLvl:'NÍVEL', win:'🎉 NÍVEL COMPLETO!', lose:'💀 FIM DE JOGO', loseSub:'Tentar novamente?', ovNext:'PRÓXIMO ▶', ovRetry:'TENTAR ↺', ovMenu:'MENU ⌂', scTxt:'VOCÊ VENCEU!\n💀 SIUUUU 💀', pause:'⏸ PAUSA' },
-  id:{ lSub:'SIUU — MASUKKAN KREDENSIAL', lBtn:'MASUK KE LAPANGAN', lErr:'Nama atau kata sandi salah!', lPlU:'Nama Pengguna', lPlP:'Kata Sandi', mPlay:'▶ MAIN', mHow:'? CARA MAIN', mLang:'🌐 BAHASA', lvlTitle:'PILIH LEVEL', lvlBack:'← KEMBALI', htTitle:'CARA MAIN', htPC:'🖥️ PC', htPCt:'← → Gerak │ ↑ Lompat │ ESC Jeda', htMob:'📱 Ponsel', htMobt:'Gunakan tombol — posisi LANDSCAPE!', htRules:'📋 Aturan', htRulest:'Kumpulkan ⚽ • Injak musuh 🔴 • Bendera 🏁 • 3 nyawa • 100 level', htBack:'← KEMBALI', hudLvl:'LEVEL', win:'🎉 LEVEL SELESAI!', lose:'💀 GAME OVER', loseSub:'Mau coba lagi?', ovNext:'LANJUT ▶', ovRetry:'COBA LAGI ↺', ovMenu:'MENU ⌂', scTxt:'KAMU MENANG!\n💀 SIUUUU 💀', pause:'⏸ JEDA' }
+  ar:{ lSub:'سيووو! 🔥', lBtn:'▶ دخول', lErr:'', lPlU:'', lPlP:'', mPlay:'▶ العب', mHow:'? كيف تلعب', mLang:'🌐 اللغة', lvlTitle:'اختر المرحلة', lvlBack:'← رجوع', htTitle:'كيف تلعب', htPC:'🖥️ PC', htPCt:'← → تحرك │ ↑ Space قفز │ ESC وقفة', htMob:'📱 الجوال', htMobt:'استخدم الأزرار — شيّل الجوال أفقي!', htRules:'📋 القواعد', htRulest:'اجمع ⚽ │ اسحق الأعداء 🔴 │ وصل للعلم 🏁 │ 3 أرواح │ 100 مرحلة', htBack:'← رجوع', hudLvl:'مرحلة', win:'🎉 تم المرور!', lose:'💀 انتهت اللعبة', loseSub:'تبي تحاول مرة ثانية؟', ovNext:'التالي ▶', ovRetry:'أعد ↺', ovMenu:'القائمة ⌂', scTxt:'انتصرت!\n💀 سيووو 💀', pause:'⏸ وقفة' },
+  en:{ lSub:'SIUUUU! 🔥', lBtn:'▶ ENTER', lErr:'', lPlU:'', lPlP:'', mPlay:'▶ PLAY', mHow:'? HOW TO PLAY', mLang:'🌐 LANGUAGE', lvlTitle:'SELECT LEVEL', lvlBack:'← BACK', htTitle:'HOW TO PLAY', htPC:'🖥️ PC Controls', htPCt:'← → Move │ ↑ W Space Jump │ ESC Pause', htMob:'📱 Mobile', htMobt:'Use on-screen buttons. Hold phone LANDSCAPE!', htRules:'📋 Rules', htRulest:'Collect ⚽ • Stomp enemies 🔴 • Reach flag 🏁 • 3 lives • 100 levels!', htBack:'← BACK', hudLvl:'LEVEL', win:'🎉 LEVEL CLEAR!', lose:'💀 GAME OVER', loseSub:'Want to try again?', ovNext:'NEXT ▶', ovRetry:'RETRY ↺', ovMenu:'MENU ⌂', scTxt:'YOU WON!\n💀 SIUUUU 💀', pause:'⏸ PAUSED' },
+  fr:{ lSub:'SIUUUU! 🔥', lBtn:'▶ ENTRER', lErr:'', lPlU:'', lPlP:'', mPlay:'▶ JOUER', mHow:'? COMMENT JOUER', mLang:'🌐 LANGUE', lvlTitle:'CHOISIR LE NIVEAU', lvlBack:'← RETOUR', htTitle:'COMMENT JOUER', htPC:'🖥️ PC', htPCt:'← → Déplacer │ ↑ Sauter │ ESC Pause', htMob:'📱 Mobile', htMobt:'Boutons à l\'écran — mode PAYSAGE!', htRules:'📋 Règles', htRulest:'Collectez ⚽ • Évitez 🔴 • Drapeau 🏁 • 3 vies • 100 niveaux', htBack:'← RETOUR', hudLvl:'NIVEAU', win:'🎉 NIVEAU RÉUSSI!', lose:'💀 GAME OVER', loseSub:'Réessayer?', ovNext:'SUIVANT ▶', ovRetry:'RÉESSAYER ↺', ovMenu:'MENU ⌂', scTxt:'VOUS AVEZ GAGNÉ!\n💀 SIUUUU 💀', pause:'⏸ PAUSE' },
+  es:{ lSub:'SIUUUU! 🔥', lBtn:'▶ ENTRAR', lErr:'', lPlU:'', lPlP:'', mPlay:'▶ JUGAR', mHow:'? CÓMO JUGAR', mLang:'🌐 IDIOMA', lvlTitle:'SELECCIONAR NIVEL', lvlBack:'← ATRÁS', htTitle:'CÓMO JUGAR', htPC:'🖥️ PC', htPCt:'← → Mover │ ↑ Saltar │ ESC Pausa', htMob:'📱 Móvil', htMobt:'Usa botones — teléfono HORIZONTAL!', htRules:'📋 Reglas', htRulest:'Recoge ⚽ • Enemigos 🔴 • Bandera 🏁 • 3 vidas • 100 niveles', htBack:'← ATRÁS', hudLvl:'NIVEL', win:'🎉 ¡NIVEL COMPLETADO!', lose:'💀 FIN DEL JUEGO', loseSub:'¿Intentar de nuevo?', ovNext:'SIGUIENTE ▶', ovRetry:'REINTENTAR ↺', ovMenu:'MENÚ ⌂', scTxt:'¡GANASTE!\n💀 SIUUUU 💀', pause:'⏸ PAUSA' },
+  pt:{ lSub:'SIUUUU! 🔥', lBtn:'▶ ENTRAR', lErr:'', lPlU:'', lPlP:'', mPlay:'▶ JOGAR', mHow:'? COMO JOGAR', mLang:'🌐 IDIOMA', lvlTitle:'SELECIONAR NÍVEL', lvlBack:'← VOLTAR', htTitle:'COMO JOGAR', htPC:'🖥️ PC', htPCt:'← → Mover │ ↑ Saltar │ ESC Pausa', htMob:'📱 Telemóvel', htMobt:'Botões em ecrã — posição HORIZONTAL!', htRules:'📋 Regras', htRulest:'Colete ⚽ • Inimigos 🔴 • Bandeira 🏁 • 3 vidas • 100 níveis', htBack:'← VOLTAR', hudLvl:'NÍVEL', win:'🎉 NÍVEL COMPLETO!', lose:'💀 FIM DE JOGO', loseSub:'Tentar novamente?', ovNext:'PRÓXIMO ▶', ovRetry:'TENTAR ↺', ovMenu:'MENU ⌂', scTxt:'VOCÊ VENCEU!\n💀 SIUUUU 💀', pause:'⏸ PAUSA' },
+  id:{ lSub:'SIUUUU! 🔥', lBtn:'▶ MASUK', lErr:'', lPlU:'', lPlP:'', mPlay:'▶ MAIN', mHow:'? CARA MAIN', mLang:'🌐 BAHASA', lvlTitle:'PILIH LEVEL', lvlBack:'← KEMBALI', htTitle:'CARA MAIN', htPC:'🖥️ PC', htPCt:'← → Gerak │ ↑ Lompat │ ESC Jeda', htMob:'📱 Ponsel', htMobt:'Gunakan tombol — posisi LANDSCAPE!', htRules:'📋 Aturan', htRulest:'Kumpulkan ⚽ • Injak musuh 🔴 • Bendera 🏁 • 3 nyawa • 100 level', htBack:'← KEMBALI', hudLvl:'LEVEL', win:'🎉 LEVEL SELESAI!', lose:'💀 GAME OVER', loseSub:'Mau coba lagi?', ovNext:'LANJUT ▶', ovRetry:'COBA LAGI ↺', ovMenu:'MENU ⌂', scTxt:'KAMU MENANG!\n💀 SIUUUU 💀', pause:'⏸ JEDA' }
 };
 let lang='ar', T=TR.ar;
 
@@ -225,10 +245,8 @@ function setLang(l){
 function applyTR(){
   const map={id_lSub:'lSub',id_lBtn:'lBtn',id_mPlay:'mPlay',id_mHow:'mHow',id_mLang:'mLang',id_lvlTitle:'lvlTitle',id_lvlBack:'lvlBack',id_htTitle:'htTitle',id_htPC:'htPC',id_htPCt:'htPCt',id_htMob:'htMob',id_htMobt:'htMobt',id_htRules:'htRules',id_htRulest:'htRulest',id_htBack:'htBack',id_ovNext:'ovNext',id_ovRetry:'ovRetry',id_ovMenu:'ovMenu'};
   for(const [eid,tk] of Object.entries(map)){
-    const el=document.getElementById(eid); if(el) el.textContent=T[tk]||'';
+    const el=document.getElementById(eid); if(el && T[tk]) el.textContent=T[tk];
   }
-  document.getElementById('id_user').placeholder=T.lPlU;
-  document.getElementById('id_pass').placeholder=T.lPlP;
 }
 applyTR();
 
@@ -271,17 +289,27 @@ let bgTmr=null;
 function startBg(lvl){ clearTimeout(bgTmr); const ac=getAC();if(!ac)return; const sp=Math.max(0.06,0.16-lvl*0.001); const bs=120+(lvl%10)*12; const ns=[bs,bs*1.25,bs*1.5,bs*2,bs*1.5,bs*1.25]; let i=0; function t(){ if(!gPlaying)return; try{const o=ac.createOscillator(),g=ac.createGain();o.connect(g);g.connect(ac.destination);o.type='square';o.frequency.value=ns[i%ns.length];g.gain.setValueAtTime(0.05,ac.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+sp*0.9);o.start();o.stop(ac.currentTime+sp*0.9);}catch(e){} i++; bgTmr=setTimeout(t,sp*1000);} t(); }
 function stopBg(){clearTimeout(bgTmr);bgTmr=null;}
 
+// ===== ROTATION (CSS-based, works on all mobile browsers) =====
+const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+function applyRotation() {
+  if (!isMobile) return;
+  const portrait = window.innerHeight > window.innerWidth;
+  document.body.classList.toggle('forceRotate', portrait);
+  // After rotation, resize canvas if game is running
+  if (gPlaying) setTimeout(resize, 50);
+}
+
+window.addEventListener('resize', applyRotation);
+window.addEventListener('orientationchange', () => setTimeout(applyRotation, 200));
+applyRotation();
+
 // ===== LOGIN =====
 function doLogin(){
   getAC();
-  const u=document.getElementById('id_user').value.trim().toLowerCase();
-  const p=document.getElementById('id_pass').value.trim();
-  const ok=(u==='cr7'&&p==='siuuu')||(u==='ronaldo'&&p==='7777')||(u==='admin'&&p==='1234')||(u.length>=3&&p.length>=3);
-  if(ok){sfxWin();goTo('menuScreen');}
-  else{document.getElementById('id_err').textContent=T.lErr;sfxDie();document.getElementById('id_pass').value='';}
+  sfxWin();
+  goTo('menuScreen');
 }
-document.getElementById('id_pass').onkeydown=e=>{if(e.key==='Enter')doLogin();};
-document.getElementById('id_user').onkeydown=e=>{if(e.key==='Enter')doLogin();};
 
 // ===== LEVEL SELECT =====
 let unlocked=parseInt(localStorage.getItem('cr7u')||'1');
@@ -309,7 +337,13 @@ const keys={left:false,right:false};
 let plats=[],enems=[],coins=[],parts=[],flagX=0,flagY=0,camX=0,lvlDone=false;
 const P={x:0,y:0,w:32,h:42,vx:0,vy:0,onGround:false,right:true,fr:0,ft:0,inv:0,dead:false};
 
-function resize(){ W=window.innerWidth;H=window.innerHeight;canvas.width=W;canvas.height=H;canvas.style.width=W+'px';canvas.style.height=H+'px'; }
+function resize(){
+  const wr = document.getElementById('wrapper');
+  W = wr.offsetWidth;
+  H = wr.offsetHeight;
+  canvas.width=W; canvas.height=H;
+  canvas.style.width=W+'px'; canvas.style.height=H+'px';
+}
 
 function genLvl(lvl){
   plats=[];enems=[];coins=[];parts=[];lvlDone=false;
